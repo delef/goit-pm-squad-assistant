@@ -1,0 +1,1 @@
+# goit-pm-squad-assistant
