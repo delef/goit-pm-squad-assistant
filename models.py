@@ -1,4 +1,5 @@
 from collections import UserDict
+from datetime import datetime
 
 
 # Base class for all fields (name, phone, etc.)
@@ -58,7 +59,7 @@ class Record:
 
 
 # Address book that stores all contacts by name
-class AddressBook(UserDict):
+class AddressBook(UserDict[str, "Record"]):
     # Add a record to the book
     def add_record(self, record):
         self.data[record.name.value] = record
@@ -72,3 +73,46 @@ class AddressBook(UserDict):
         if name not in self.data:
             raise KeyError
         del self.data[name]
+
+
+# Represents a single note with id, title, body, tags and creation date
+class Note:
+    def __init__(self, note_id, title, body):
+        self.id = note_id
+        self.title = title
+        self.body = body
+        self.tags = []
+        self.created_at = datetime.now().strftime("%Y-%m-%d")
+
+    def __str__(self):
+        tags = ", ".join(self.tags) if self.tags else "—"
+        return (
+            f"[{self.id}] {self.title}\n"
+            f"  Body: {self.body}\n"
+            f"  Tags: {tags}\n"
+            f"  Created: {self.created_at}"
+        )
+
+
+# Stores all notes, auto-increments IDs
+class NoteBook:
+    def __init__(self):
+        self.notes = {}
+        self.next_id = 1
+
+    # Add a new note, returns the created note
+    def add_note(self, title, body):
+        note = Note(self.next_id, title, body)
+        self.notes[self.next_id] = note
+        self.next_id += 1
+        return note
+
+    # Find a note by ID, returns None if not found
+    def find(self, note_id):
+        return self.notes.get(note_id)
+
+    # Delete a note by ID, raises KeyError if not found
+    def delete(self, note_id):
+        if note_id not in self.notes:
+            raise KeyError
+        del self.notes[note_id]

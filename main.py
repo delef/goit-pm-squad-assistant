@@ -1,4 +1,5 @@
 from handlers_contacts import add_contact, change_contact, delete_contact, show_phone
+from handlers_notes import add_note, delete_note, edit_note, show_notes
 from storage import load_data, save_data
 
 
@@ -11,7 +12,7 @@ def parse_input(user_input):
 
 # Main bot loop: read commands and dispatch to handlers
 def main():
-    book = load_data()
+    book, notebook = load_data()
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -19,11 +20,12 @@ def main():
 
         match command:
             case "close" | "exit":
-                save_data(book)
+                save_data(book, notebook)
                 print("Good bye!")
                 break
             case "hello":
                 print("How can I help you?")
+            # Contacts commands
             case "add":
                 print(add_contact(args, book))
             case "change":
@@ -35,6 +37,15 @@ def main():
                     print(record)
             case "delete":
                 print(delete_contact(args, book))
+            # Notes commands
+            case "add-note":
+                print(add_note(args, notebook))
+            case "show-notes":
+                print(show_notes(notebook))
+            case "edit-note":
+                print(edit_note(args, notebook))
+            case "delete-note":
+                print(delete_note(args, notebook))
             case _:
                 print("Invalid command.")
 

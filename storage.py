@@ -1,18 +1,21 @@
 import pickle
 
-from models import AddressBook
+from models import AddressBook, NoteBook
+
+FILENAME = "assistant_data.pkl"
 
 
-# Save address book to a file using pickle
-def save_data(book, filename="assistant_data.pkl"):
-    with open(filename, "wb") as f:
-        pickle.dump(book, f)
+# Save all data to a file using pickle
+def save_data(book, notebook):
+    with open(FILENAME, "wb") as f:
+        pickle.dump({"book": book, "notebook": notebook}, f)
 
 
-# Load address book from file, or return a new one if file doesn't exist
-def load_data(filename="assistant_data.pkl"):
+# Load all data from file, or return new instances if file doesn't exist
+def load_data():
     try:
-        with open(filename, "rb") as f:
-            return pickle.load(f)
+        with open(FILENAME, "rb") as f:
+            data = pickle.load(f)
+            return data["book"], data["notebook"]
     except FileNotFoundError:
-        return AddressBook()
+        return AddressBook(), NoteBook()
