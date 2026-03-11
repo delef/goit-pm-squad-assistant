@@ -14,7 +14,7 @@ A command-line assistant for managing contacts and notes, built with Python.
 ## How to Run
 
 ```bash
-git clone https://github.com/kobryn-mykhailo/goit-pm-squad-assistant.git
+git clone https://github.com/delef/goit-pm-squad-assistant.git
 cd goit-pm-squad-assistant
 python main.py
 ```
