@@ -59,7 +59,7 @@ python main.py
 | `help` | Show available commands |
 | `close` / `exit` | Exit the program |
 
-## Git Workflow
+## GitHub Workflow
 
 1. Each person works in their own **feature branch** (e.g., `feature/contacts`, `feature/notes`).
 2. When the work is ready, create a **Pull Request** to `main`.
