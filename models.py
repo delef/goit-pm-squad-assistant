@@ -1,5 +1,5 @@
 from collections import UserDict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 # Base class for all fields (name, phone, etc.)
@@ -24,11 +24,37 @@ class Phone(Field):
         super().__init__(value)
 
 
+# Stores birthday, validates DD.MM.YYYY format
+class Birthday(Field):
+    def __init__(self, value):
+        try:
+            self.value = datetime.strptime(value, "%d.%m.%Y")
+        except ValueError:
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")
+
+
+# Stores email, validates that it contains @ and . after @
+class Email(Field):
+    def __init__(self, value):
+        at_pos = value.find("@")
+        if at_pos < 1 or "." not in value[at_pos:]:
+            raise ValueError("Invalid email format.")
+        super().__init__(value)
+
+
+# Stores address as free text
+class Address(Field):
+    pass
+
+
 # Represents a single contact with a name and list of phones
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.birthday = None
+        self.email = None
+        self.address = None
 
     # Add a new phone to the contact
     def add_phone(self, phone):
@@ -53,9 +79,27 @@ class Record:
                 return p
         return None
 
+    # Add birthday to the contact
+    def add_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
+
+    # Add email to the contact
+    def add_email(self, email):
+        self.email = Email(email)
+
+    # Add address to the contact
+    def add_address(self, address):
+        self.address = Address(address)
+
     def __str__(self):
         phones = "; ".join(str(p) for p in self.phones)
-        return f"Contact name: {self.name}, phones: {phones}"
+        birthday = self.birthday.value.strftime("%d.%m.%Y") if self.birthday else "not set"
+        email = str(self.email) if self.email else "not set"
+        address = str(self.address) if self.address else "not set"
+        return (
+            f"Contact name: {self.name}, phones: {phones}, "
+            f"birthday: {birthday}, email: {email}, address: {address}"
+        )
 
 
 # Address book that stores all contacts by name
@@ -73,6 +117,41 @@ class AddressBook(UserDict[str, "Record"]):
         if name not in self.data:
             raise KeyError
         del self.data[name]
+
+    # Search contacts by name, phone or email (case-insensitive)
+    def search(self, query):
+        query = query.lower()
+        results = []
+        for record in self.data.values():
+            if query in record.name.value.lower():
+                results.append(record)
+            elif any(query in p.value for p in record.phones):
+                results.append(record)
+            elif record.email and query in record.email.value.lower():
+                results.append(record)
+        return results
+
+    # Get contacts with birthdays in the next N days
+    def get_upcoming_birthdays(self, days=7):
+        today = datetime.today().date()
+        upcoming = []
+        for record in self.data.values():
+            if record.birthday is None:
+                continue
+            bday = record.birthday.value.date().replace(year=today.year)
+            if bday < today:
+                bday = bday.replace(year=today.year + 1)
+            if (bday - today).days <= days:
+                congrats = bday
+                if congrats.weekday() == 5:
+                    congrats += timedelta(days=2)
+                elif congrats.weekday() == 6:
+                    congrats += timedelta(days=1)
+                upcoming.append({
+                    "name": record.name.value,
+                    "congratulation_date": congrats.strftime("%d.%m.%Y")
+                })
+        return upcoming
 
 
 # Represents a single note with id, title, body, tags and creation date

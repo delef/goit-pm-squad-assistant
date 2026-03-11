@@ -44,3 +44,70 @@ def delete_contact(args, book: AddressBook):
     name, *_ = args
     book.delete(name)
     return "Contact deleted."
+
+
+# Add birthday to a contact
+@input_error
+def add_birthday(args, book: AddressBook):
+    name, birthday = args
+    record = book.find(name)
+    if record is None:
+        raise KeyError
+    record.add_birthday(birthday)
+    return "Birthday added."
+
+
+# Show birthday for a contact
+@input_error
+def show_birthday(args, book: AddressBook):
+    name, *_ = args
+    record = book.find(name)
+    if record is None:
+        raise KeyError
+    if record.birthday is None:
+        return "Birthday not set."
+    return record.birthday.value.strftime("%d.%m.%Y")
+
+
+# Show upcoming birthdays in the next N days
+@input_error
+def birthdays(args, book: AddressBook):
+    days = int(args[0]) if args else 7
+    upcoming = book.get_upcoming_birthdays(days)
+    if not upcoming:
+        return "No upcoming birthdays."
+    return "\n".join(
+        f"{item['name']}: {item['congratulation_date']}" for item in upcoming
+    )
+
+
+# Add email to a contact
+@input_error
+def add_email(args, book: AddressBook):
+    name, email = args
+    record = book.find(name)
+    if record is None:
+        raise KeyError
+    record.add_email(email)
+    return "Email added."
+
+
+# Add address to a contact
+@input_error
+def add_address(args, book: AddressBook):
+    name, *address_parts = args
+    record = book.find(name)
+    if record is None:
+        raise KeyError
+    record.add_address(" ".join(address_parts))
+    return "Address added."
+
+
+# Search contacts by name, phone or email
+@input_error
+def search_contacts(args, book: AddressBook):
+    query, *_ = args
+    results = book.search(query)
+    if not results:
+        return "No contacts found."
+    return "\n".join(str(r) for r in results)
