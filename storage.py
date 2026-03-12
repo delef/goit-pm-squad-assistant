@@ -1,8 +1,9 @@
 import pickle
+from pathlib import Path
 
 from models import AddressBook, NoteBook
 
-FILENAME = "assistant_data.pkl"
+FILENAME = Path.home() / "assistant_data.pkl"
 
 
 # Save all data to a file using pickle
