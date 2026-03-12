@@ -1,4 +1,8 @@
-from handlers_contacts import add_contact, change_contact, delete_contact, show_phone
+from handlers_contacts import (
+    add_contact, change_contact, delete_contact, show_phone,
+    add_birthday, show_birthday, birthdays, add_email, add_address,
+    search_contacts,
+)
 from handlers_notes import add_note, delete_note, edit_note, show_notes
 from storage import load_data, save_data
 
@@ -37,6 +41,18 @@ def main():
                     print(record)
             case "delete":
                 print(delete_contact(args, book))
+            case "add-birthday":
+                print(add_birthday(args, book))
+            case "show-birthday":
+                print(show_birthday(args, book))
+            case "birthdays":
+                print(birthdays(args, book))
+            case "add-email":
+                print(add_email(args, book))
+            case "add-address":
+                print(add_address(args, book))
+            case "search":
+                print(search_contacts(args, book))
             # Notes commands
             case "add-note":
                 print(add_note(args, notebook))
