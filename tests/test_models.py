@@ -1,6 +1,9 @@
 import pytest
-from datetime import datetime
-from models import Field, Name, Phone, Record, AddressBook, Note, NoteBook
+from datetime import datetime, timedelta
+from models import (
+    Field, Name, Phone, Birthday, Email, Address,
+    Record, AddressBook, Note, NoteBook,
+)
 
 
 # --- Field ---
@@ -35,6 +38,50 @@ class TestPhone:
     def test_long_phone(self):
         with pytest.raises(ValueError):
             Phone("12345678901")
+
+
+# --- Birthday ---
+
+class TestBirthday:
+    def test_valid_birthday(self):
+        b = Birthday("24.08.1983")
+        assert b.value == datetime.strptime("24.08.1983", "%d.%m.%Y")
+
+    def test_invalid_format(self):
+        with pytest.raises(ValueError):
+            Birthday("1983-08-24")
+
+    def test_invalid_date(self):
+        with pytest.raises(ValueError):
+            Birthday("not-a-date")
+
+
+# --- Email ---
+
+class TestEmail:
+    def test_valid_email(self):
+        e = Email("test@mail.com")
+        assert e.value == "test@mail.com"
+
+    def test_no_at(self):
+        with pytest.raises(ValueError):
+            Email("testmail.com")
+
+    def test_no_dot_after_at(self):
+        with pytest.raises(ValueError):
+            Email("test@mailcom")
+
+    def test_at_at_start(self):
+        with pytest.raises(ValueError):
+            Email("@mail.com")
+
+
+# --- Address ---
+
+class TestAddress:
+    def test_stores_value(self):
+        a = Address("Kyiv, Main St 1")
+        assert a.value == "Kyiv, Main St 1"
 
 
 # --- Record ---
@@ -78,11 +125,40 @@ class TestRecord:
         assert phone.value == "1234567890"
         assert r.find_phone("0000000000") is None
 
+    def test_add_birthday(self):
+        r = Record("John")
+        r.add_birthday("24.08.1983")
+        assert r.birthday is not None
+        assert r.birthday.value.strftime("%d.%m.%Y") == "24.08.1983"
+
+    def test_add_email(self):
+        r = Record("John")
+        r.add_email("john@mail.com")
+        assert r.email is not None
+        assert r.email.value == "john@mail.com"
+
+    def test_add_address(self):
+        r = Record("John")
+        r.add_address("Kyiv Main St 1")
+        assert r.address is not None
+        assert r.address.value == "Kyiv Main St 1"
+
     def test_str(self):
         r = Record("John")
         r.add_phone("1234567890")
         assert "John" in str(r)
         assert "1234567890" in str(r)
+
+    def test_str_with_all_fields(self):
+        r = Record("John")
+        r.add_phone("1234567890")
+        r.add_birthday("24.08.1983")
+        r.add_email("john@mail.com")
+        r.add_address("Kyiv")
+        s = str(r)
+        assert "24.08.1983" in s
+        assert "john@mail.com" in s
+        assert "Kyiv" in s
 
 
 # --- AddressBook ---
@@ -109,6 +185,58 @@ class TestAddressBook:
         book = AddressBook()
         with pytest.raises(KeyError):
             book.delete("Nobody")
+
+    def test_search_by_name(self):
+        book = AddressBook()
+        r = Record("John")
+        book.add_record(r)
+        results = book.search("john")
+        assert len(results) == 1
+        assert results[0].name.value == "John"
+
+    def test_search_by_phone(self):
+        book = AddressBook()
+        r = Record("John")
+        r.add_phone("1234567890")
+        book.add_record(r)
+        results = book.search("1234")
+        assert len(results) == 1
+
+    def test_search_by_email(self):
+        book = AddressBook()
+        r = Record("John")
+        r.add_email("john@mail.com")
+        book.add_record(r)
+        results = book.search("john@mail")
+        assert len(results) == 1
+
+    def test_search_not_found(self):
+        book = AddressBook()
+        r = Record("John")
+        book.add_record(r)
+        results = book.search("nobody")
+        assert len(results) == 0
+
+    def test_get_upcoming_birthdays(self):
+        book = AddressBook()
+        r = Record("John")
+        # Set birthday to 3 days from now (this year)
+        future = datetime.today() + timedelta(days=3)
+        bday_str = future.strftime("%d.%m.%Y").replace(
+            str(future.year), "1990"
+        )
+        r.add_birthday(bday_str)
+        book.add_record(r)
+        upcoming = book.get_upcoming_birthdays(7)
+        assert len(upcoming) == 1
+        assert upcoming[0]["name"] == "John"
+
+    def test_get_upcoming_birthdays_empty(self):
+        book = AddressBook()
+        r = Record("John")
+        book.add_record(r)
+        upcoming = book.get_upcoming_birthdays(7)
+        assert len(upcoming) == 0
 
 
 # --- Note ---
