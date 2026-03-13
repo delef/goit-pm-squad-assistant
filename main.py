@@ -3,6 +3,7 @@ from handlers_contacts import (
     add_birthday, show_birthday, birthdays, add_email, add_address,
     search_contacts,
 )
+
 from handlers_notes import (
     add_note, delete_note, edit_note, show_notes,
     find_note, add_tag, find_by_tag, sort_by_tag,
