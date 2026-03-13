@@ -45,6 +45,18 @@ def main():
                     print(record)
             case "delete":
                 print(delete_contact(args, book))
+            case "add-birthday":
+                print(add_birthday(args, book))
+            case "show-birthday":
+                print(show_birthday(args, book))
+            case "birthdays":
+                print(birthdays(args, book))
+            case "add-email":
+                print(add_email(args, book))
+            case "add-address":
+                print(add_address(args, book))
+            case "search":
+                print(search_contacts(args, book))
             # Notes commands
             case "add-note":
                 print(add_note(args, notebook))
