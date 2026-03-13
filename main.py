@@ -1,5 +1,8 @@
 from handlers_contacts import add_contact, change_contact, delete_contact, show_phone
-from handlers_notes import add_note, delete_note, edit_note, show_notes
+from handlers_notes import (
+    add_note, delete_note, edit_note, show_notes,
+    find_note, add_tag, find_by_tag, sort_by_tag,
+)
 from storage import load_data, save_data
 
 
@@ -46,6 +49,15 @@ def main():
                 print(edit_note(args, notebook))
             case "delete-note":
                 print(delete_note(args, notebook))
+            # New note commands
+            case "find-note":
+                print(find_note(args, notebook))
+            case "add-tag":
+                print(add_tag(args, notebook))
+            case "find-by-tag":
+                print(find_by_tag(args, notebook))
+            case "sort-by-tag":
+                print(sort_by_tag(args, notebook))
             case _:
                 print("Invalid command.")
 
