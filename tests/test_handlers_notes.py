@@ -11,6 +11,27 @@ class TestAddNote:
         assert note.title == "Shopping"
         assert note.body == "Buy milk"
 
+    def test_add_with_separator(self):
+        nb = NoteBook()
+        assert add_note(["My", "Cool", "Title", "--", "here", "is", "the", "body"], nb) == "Note added with ID 1."
+        note = nb.find(1)
+        assert note.title == "My Cool Title"
+        assert note.body == "here is the body"
+
+    def test_add_separator_no_body(self):
+        nb = NoteBook()
+        assert add_note(["Title", "--"], nb) == "Note added with ID 1."
+        note = nb.find(1)
+        assert note.title == "Title"
+        assert note.body == ""
+
+    def test_add_without_separator_backwards_compatible(self):
+        nb = NoteBook()
+        assert add_note(["Shopping", "Buy", "milk"], nb) == "Note added with ID 1."
+        note = nb.find(1)
+        assert note.title == "Shopping"
+        assert note.body == "Buy milk"
+
     def test_add_not_enough_args(self):
         nb = NoteBook()
         result = add_note([], nb)
@@ -42,7 +63,7 @@ class TestEditNote:
 
     def test_edit_not_found(self):
         nb = NoteBook()
-        assert edit_note(["99", "nope"], nb) == "Contact not found."
+        assert edit_note(["99", "nope"], nb) == "Note not found."
 
 
 class TestDeleteNote:
@@ -54,4 +75,4 @@ class TestDeleteNote:
 
     def test_delete_not_found(self):
         nb = NoteBook()
-        assert delete_note(["99"], nb) == "Contact not found."
+        assert delete_note(["99"], nb) == "Note not found."

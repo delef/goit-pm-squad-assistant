@@ -106,17 +106,18 @@ class Record:
 class AddressBook(UserDict[str, "Record"]):
     # Add a record to the book
     def add_record(self, record):
-        self.data[record.name.value] = record
+        self.data[record.name.value.lower()] = record
 
     # Find a record by name, returns None if not found
     def find(self, name):
-        return self.data.get(name)
+        return self.data.get(name.lower())
 
     # Delete a record by name, raises KeyError if not found
     def delete(self, name):
-        if name not in self.data:
+        key = name.lower()
+        if key not in self.data:
             raise KeyError
-        del self.data[name]
+        del self.data[key]
 
     # Search contacts by name, phone or email (case-insensitive)
     def search(self, query):

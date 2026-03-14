@@ -31,6 +31,42 @@ class TestAddContact:
         assert "not enough" in result.lower()
 
 
+class TestCaseInsensitiveLookup:
+    def test_find_lowercase(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        assert show_phone(["peter"], book) == "1234567890"
+
+    def test_find_uppercase(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        assert show_phone(["PETER"], book) == "1234567890"
+
+    def test_find_mixedcase(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        assert show_phone(["pEtEr"], book) == "1234567890"
+
+    def test_add_phone_case_insensitive(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        assert add_contact(["peter", "0987654321"], book) == "Contact updated."
+        record = book.find("Peter")
+        assert len(record.phones) == 2
+
+    def test_delete_case_insensitive(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        assert delete_contact(["peter"], book) == "Contact deleted."
+        assert book.find("Peter") is None
+
+    def test_preserves_original_name(self):
+        book = AddressBook()
+        add_contact(["Peter", "1234567890"], book)
+        record = book.find("peter")
+        assert record.name.value == "Peter"
+
+
 class TestChangeContact:
     def test_change_phone(self):
         book = AddressBook()
