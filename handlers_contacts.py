@@ -3,7 +3,7 @@ from models import AddressBook, Record
 
 
 # Add a new contact or add a phone to an existing one
-@input_error
+@input_error("Contact")
 def add_contact(args, book: AddressBook):
     name, phone, *_ = args
     record = book.find(name)
@@ -18,7 +18,7 @@ def add_contact(args, book: AddressBook):
 
 
 # Change an existing phone number for a contact
-@input_error
+@input_error("Contact")
 def change_contact(args, book: AddressBook):
     name, old_phone, new_phone, *_ = args
     record = book.find(name)
@@ -29,7 +29,7 @@ def change_contact(args, book: AddressBook):
 
 
 # Show all phone numbers for a contact
-@input_error
+@input_error("Contact")
 def show_phone(args, book: AddressBook):
     name, *_ = args
     record = book.find(name)
@@ -39,7 +39,7 @@ def show_phone(args, book: AddressBook):
 
 
 # Delete a contact from the address book
-@input_error
+@input_error("Contact")
 def delete_contact(args, book: AddressBook):
     name, *_ = args
     book.delete(name)
@@ -47,7 +47,7 @@ def delete_contact(args, book: AddressBook):
 
 
 # Add birthday to a contact
-@input_error
+@input_error("Contact")
 def add_birthday(args, book: AddressBook):
     name, birthday = args
     record = book.find(name)
@@ -58,7 +58,7 @@ def add_birthday(args, book: AddressBook):
 
 
 # Show birthday for a contact
-@input_error
+@input_error("Contact")
 def show_birthday(args, book: AddressBook):
     name, *_ = args
     record = book.find(name)
@@ -70,7 +70,7 @@ def show_birthday(args, book: AddressBook):
 
 
 # Show upcoming birthdays in the next N days
-@input_error
+@input_error("Contact")
 def birthdays(args, book: AddressBook):
     days = int(args[0]) if args else 7
     upcoming = book.get_upcoming_birthdays(days)
@@ -82,7 +82,7 @@ def birthdays(args, book: AddressBook):
 
 
 # Add email to a contact
-@input_error
+@input_error("Contact")
 def add_email(args, book: AddressBook):
     name, email = args
     record = book.find(name)
@@ -93,7 +93,7 @@ def add_email(args, book: AddressBook):
 
 
 # Add address to a contact
-@input_error
+@input_error("Contact")
 def add_address(args, book: AddressBook):
     name, *address_parts = args
     record = book.find(name)
@@ -104,7 +104,7 @@ def add_address(args, book: AddressBook):
 
 
 # Search contacts by name, phone or email
-@input_error
+@input_error("Contact")
 def search_contacts(args, book: AddressBook):
     query, *_ = args
     results = book.search(query)

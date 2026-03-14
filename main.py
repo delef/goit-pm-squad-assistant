@@ -9,6 +9,10 @@ from handlers_notes import (
     find_note, add_tag, find_by_tag, sort_by_tag,
 )
 from storage import load_data, save_data
+from ui import (
+    print_welcome, print_goodbye, print_result, get_input,
+    print_contacts_table, print_notes_table, print_birthdays, print_help,
+)
 
 
 # Parse user input into command and arguments
@@ -21,62 +25,77 @@ def parse_input(user_input):
 # Main bot loop: read commands and dispatch to handlers
 def main():
     book, notebook = load_data()
-    print("Welcome to the assistant bot!")
+    print_welcome()
     while True:
-        user_input = input("Enter a command: ")
+        try:
+            user_input = get_input()
+        except (KeyboardInterrupt, EOFError):
+            print()
+            save_data(book, notebook)
+            print_goodbye()
+            break
+        if not user_input.strip():
+            continue
         command, *args = parse_input(user_input)
 
         match command:
             case "close" | "exit":
                 save_data(book, notebook)
-                print("Good bye!")
+                print_goodbye()
                 break
             case "hello":
-                print("How can I help you?")
+                print_result("How can I help you?")
+            case "help":
+                print_help()
             # Contacts commands
             case "add":
-                print(add_contact(args, book))
+                print_result(add_contact(args, book))
             case "change":
-                print(change_contact(args, book))
+                print_result(change_contact(args, book))
             case "phone":
-                print(show_phone(args, book))
+                print_result(show_phone(args, book))
             case "all":
-                for record in book.data.values():
-                    print(record)
+                print_contacts_table(book.data.values())
             case "delete":
-                print(delete_contact(args, book))
+                print_result(delete_contact(args, book))
             case "add-birthday":
-                print(add_birthday(args, book))
+                print_result(add_birthday(args, book))
             case "show-birthday":
-                print(show_birthday(args, book))
+                print_result(show_birthday(args, book))
             case "birthdays":
-                print(birthdays(args, book))
+                print_birthdays(book.get_upcoming_birthdays(
+                    int(args[0]) if args else 7
+                ))
             case "add-email":
-                print(add_email(args, book))
+                print_result(add_email(args, book))
             case "add-address":
-                print(add_address(args, book))
+                print_result(add_address(args, book))
             case "search":
-                print(search_contacts(args, book))
+                results = book.search(args[0]) if args else []
+                if results:
+                    print_contacts_table(results)
+                else:
+                    print_result("No contacts found." if args else "Not enough arguments provided.")
             # Notes commands
             case "add-note":
-                print(add_note(args, notebook))
+                print_result(add_note(args, notebook))
             case "show-notes":
-                print(show_notes(notebook))
+                print_notes_table(notebook.notes.values())
             case "edit-note":
-                print(edit_note(args, notebook))
+                print_result(edit_note(args, notebook))
             case "delete-note":
-                print(delete_note(args, notebook))
+                print_result(delete_note(args, notebook))
             # New note commands
             case "find-note":
-                print(find_note(args, notebook))
+                print_result(find_note(args, notebook))
             case "add-tag":
-                print(add_tag(args, notebook))
+                print_result(add_tag(args, notebook))
             case "find-by-tag":
-                print(find_by_tag(args, notebook))
+                print_result(find_by_tag(args, notebook))
             case "sort-by-tag":
-                print(sort_by_tag(args, notebook))
+                print_result(sort_by_tag(args, notebook))
             case _:
-                print("Invalid command.")
+                print_result("Invalid command.")
 
 
 if __name__ == "__main__":
