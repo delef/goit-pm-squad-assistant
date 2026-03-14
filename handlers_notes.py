@@ -19,7 +19,7 @@ def show_notes(notebook: NoteBook):
 
 
 # Edit the body of an existing note by ID
-@input_error
+@input_error("Notes")
 def edit_note(args, notebook: NoteBook):
     note_id, *body_parts = args
     note = notebook.find(int(note_id))
@@ -30,7 +30,7 @@ def edit_note(args, notebook: NoteBook):
 
 
 # Delete a note by ID
-@input_error
+@input_error("Notes")
 def delete_note(args, notebook: NoteBook):
     note_id, *_ = args
     notebook.delete(int(note_id))
@@ -50,8 +50,8 @@ def find_note(args, notebook: NoteBook):
     return "\n".join(str(note) for note in matches)
 
 
-# Add a tag to a note by ID
-@input_error
+# Add a tag to a note by ID (no duplicates allowed)
+@input_error("Notes")
 def add_tag(args, notebook: NoteBook):
     if len(args) < 2:
         raise ValueError("Usage: add-tag [id] [tag]")
@@ -59,8 +59,11 @@ def add_tag(args, notebook: NoteBook):
     note = notebook.find(int(note_id))
     if note is None:
         raise KeyError
-    note.tags.append(tag.lower())
-    return f"Tag '{tag.lower()}' added to note {note_id}."
+    tag = tag.lower()
+    if tag in note.tags:                          # fix 1: перевірка дубліката
+        return f"Tag '{tag}' already exists on note {note_id}."
+    note.tags.append(tag)
+    return f"Tag '{tag}' added to note {note_id}."
 
 
 # Find all notes that contain a given tag (case-insensitive)
@@ -77,8 +80,7 @@ def find_by_tag(args, notebook: NoteBook):
 
 
 # Show all notes sorted by their first tag alphabetically; untagged notes last
-@input_error
-def sort_by_tag(args, notebook: NoteBook):
+def sort_by_tag(args, notebook: NoteBook):           # fix 2: прибрано @input_error
     if not notebook.notes:
         return "No notes saved."
     tagged = [note for note in notebook.notes.values() if note.tags]
