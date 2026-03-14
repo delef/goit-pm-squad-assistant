@@ -16,27 +16,30 @@ A command-line assistant for managing contacts and notes, built with Python.
 ```bash
 git clone https://github.com/delef/goit-pm-squad-assistant.git
 cd goit-pm-squad-assistant
+pip install -r requirements.txt
 python main.py
 ```
+
+> **Note (Windows):** If you get `ModuleNotFoundError: No module named 'readline'`, install the Windows replacement: `pip install pyreadline3`
 
 ## Project Structure
 
 | File | Description |
 |------|-------------|
-| `main.py` | Entry point. Starts the bot, runs the command loop, connects all commands to handler functions. On start calls `load_data()`, on exit calls `save_data()`. |
-| `models.py` | Contains all data classes: `Field`, `Name`, `Phone`, `Email`, `Birthday`, `Address`, `Record`, `AddressBook`, `Note`, `NoteBook`. |
-| `handlers_contacts.py` | Functions that handle contact-related commands. Each function takes `(args, book)` and returns a string. |
-| `handlers_notes.py` | Functions that handle note-related commands. Each function takes `(args, notebook)` and returns a string. |
-| `decorators.py` | Contains the `@input_error` decorator that wraps handler functions and catches errors. |
-| `storage.py` | `save_data()` and `load_data()` functions — saves/loads AddressBook and NoteBook to/from a `.pkl` file. |
-| `.gitignore` | Tells Git to ignore: `assistant_data.pkl`, `__pycache__/`, `venv/` |
-| `README.md` | Project description and list of all available commands. |
+| `main.py` | Entry point — command loop, input parsing, dispatches to handlers |
+| `models.py` | Data classes: `Field`, `Name`, `Phone`, `Email`, `Birthday`, `Address`, `Record`, `AddressBook`, `Note`, `NoteBook` |
+| `handlers_contacts.py` | Contact command handlers (add, change, delete, search, birthday, email, address) |
+| `handlers_notes.py` | Note command handlers (add, edit, delete, find, tags) |
+| `decorators.py` | `@input_error` decorator — catches and formats handler errors |
+| `storage.py` | `save_data()` / `load_data()` — persists AddressBook and NoteBook to a `.pkl` file |
+| `ui.py` | Colored terminal output, tables, tab-completion, welcome/help screens |
 
 ## Available Commands
 
+### Contacts
+
 | Command | Description |
 |---------|-------------|
-| `hello` | Greeting |
 | `add [name] [phone]` | Add a contact or add a phone to an existing contact |
 | `change [name] [old phone] [new phone]` | Change a phone number |
 | `phone [name]` | Show phone numbers for a contact |
@@ -48,16 +51,27 @@ python main.py
 | `birthdays [days]` | Show upcoming birthdays (default: 7 days) |
 | `add-email [name] [email]` | Add email to a contact |
 | `add-address [name] [address]` | Add address to a contact |
+
+### Notes
+
+| Command | Description |
+|---------|-------------|
 | `add-note [title] [body]` | Add a new note |
 | `show-notes` | Show all notes |
-| `find-note [query]` | Search notes by title or body |
-| `edit-note [id] [new body]` | Edit a note |
+| `edit-note [id] [body]` | Edit a note |
 | `delete-note [id]` | Delete a note |
+| `find-note [query]` | Search notes by title or body |
 | `add-tag [id] [tag]` | Add a tag to a note |
 | `find-by-tag [tag]` | Find notes by tag |
 | `sort-by-tag` | Show notes sorted by tags |
+
+### General
+
+| Command | Description |
+|---------|-------------|
+| `hello` | Greeting |
 | `help` | Show available commands |
-| `close` / `exit` | Exit the program |
+| `close` / `exit` | Save and exit |
 
 ## GitHub Workflow
 
