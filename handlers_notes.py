@@ -43,7 +43,7 @@ def delete_note(args, notebook: NoteBook):
 
 
 # Search notes where title or body contains query (case-insensitive)
-@input_error
+@input_error("Note")
 def find_note(args, notebook: NoteBook):
     query, *_ = args
     matches = [
@@ -56,7 +56,7 @@ def find_note(args, notebook: NoteBook):
 
 
 # Add a tag to a note by ID (no duplicates allowed)
-@input_error("Notes")
+@input_error("Note")
 def add_tag(args, notebook: NoteBook):
     if len(args) < 2:
         raise ValueError("Usage: add-tag [id] [tag]")
@@ -72,7 +72,7 @@ def add_tag(args, notebook: NoteBook):
 
 
 # Find all notes that contain a given tag (case-insensitive)
-@input_error
+@input_error("Note")
 def find_by_tag(args, notebook: NoteBook):
     tag, *_ = args
     matches = [
