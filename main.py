@@ -3,7 +3,11 @@ from handlers_contacts import (
     add_birthday, show_birthday, birthdays, add_email, add_address,
     search_contacts,
 )
-from handlers_notes import add_note, delete_note, edit_note, show_notes
+
+from handlers_notes import (
+    add_note, delete_note, edit_note, show_notes,
+    find_note, add_tag, find_by_tag, sort_by_tag,
+)
 from storage import load_data, save_data
 from ui import (
     print_welcome, print_goodbye, print_result, get_input,
@@ -81,6 +85,15 @@ def main():
                 print_result(edit_note(args, notebook))
             case "delete-note":
                 print_result(delete_note(args, notebook))
+            # New note commands
+            case "find-note":
+                print_result(find_note(args, notebook))
+            case "add-tag":
+                print_result(add_tag(args, notebook))
+            case "find-by-tag":
+                print_result(find_by_tag(args, notebook))
+            case "sort-by-tag":
+                print_result(sort_by_tag(args, notebook))
             case _:
                 print_result("Invalid command.")
 
