@@ -140,7 +140,7 @@ TEAM = [
 
 
 def print_welcome():
-    print(_panel(f"{YELLOW}Assistant Bot{R}"))
+    print(_panel(f"{YELLOW}Welcome to the assistant bot!{R}"))
     print(f"  {DIM}Your personal contacts & notes manager{R}\n")
     print(f"  {DIM}by PM Squad team:{R}")
     for name, role in TEAM:
@@ -150,7 +150,7 @@ def print_welcome():
 
 
 def print_goodbye():
-    print(_panel(f"{YELLOW}See you next time!{R}"))
+    print(_panel(f"{YELLOW}Good bye!{R}"))
 
 
 def print_help():

@@ -63,9 +63,12 @@ def main():
             case "show-birthday":
                 print_result(show_birthday(args, book))
             case "birthdays":
-                print_birthdays(book.get_upcoming_birthdays(
-                    int(args[0]) if args else 7
-                ))
+                try:
+                    days = int(args[0]) if args else 7
+                except ValueError:
+                    print_result("Please provide a valid number of days.")
+                    continue
+                print_birthdays(book.get_upcoming_birthdays(days))
             case "add-email":
                 print_result(add_email(args, book))
             case "add-address":
