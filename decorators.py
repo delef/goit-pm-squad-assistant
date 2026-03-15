@@ -7,6 +7,8 @@ def input_error(entity="Contact"):
             except KeyError:
                 return f"{entity} not found."
             except ValueError as e:
+                if "not enough values to unpack" in str(e):
+                    return "Not enough arguments provided."
                 return str(e)
             except IndexError:
                 return "Not enough arguments provided."
