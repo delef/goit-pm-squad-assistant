@@ -22,6 +22,15 @@ python main.py
 
 > **Note (Windows):** If you get `ModuleNotFoundError: No module named 'readline'`, install the Windows replacement: `pip install pyreadline3`
 
+## Features
+
+- **Contact management** — phones, emails, birthdays, addresses with validation
+- **Notes with tags** — create, edit, search, and organize notes by tags
+- **Tab completion** — press `Tab` to autocomplete command names
+- **Command suggestions** — typo detection with "Did you mean?" hints
+- **Persistent storage** — data is saved automatically to `~/assistant_data.pkl`
+- **Colored terminal UI** — formatted tables, colored output, welcome and help screens
+
 ## Project Structure
 
 | File | Description |
@@ -32,7 +41,7 @@ python main.py
 | `handlers_notes.py` | Note command handlers (add, edit, delete, find, tags) |
 | `decorators.py` | `@input_error` decorator — catches and formats handler errors |
 | `storage.py` | `save_data()` / `load_data()` — persists AddressBook and NoteBook to a `.pkl` file |
-| `ui.py` | Colored terminal output, tables, tab-completion, welcome/help screens |
+| `ui.py` | Colored terminal output, tables, tab-completion, command suggestions, welcome/help screens |
 
 ## Available Commands
 
@@ -72,6 +81,24 @@ python main.py
 | `hello` | Greeting |
 | `help` | Show available commands |
 | `close` / `exit` | Save and exit |
+
+## Tests
+
+Tests are located in the `tests/` directory and run with [pytest](https://docs.pytest.org/):
+
+```bash
+pytest tests/ -v
+```
+
+Tests run automatically on every pull request via GitHub Actions (Python 3.12).
+
+| Test file | Coverage |
+|-----------|----------|
+| `test_models.py` | Data classes: Field, Name, Phone, Birthday, Email, Address, Record, AddressBook, Note, NoteBook |
+| `test_handlers_contacts.py` | Contact command handlers |
+| `test_handlers_notes.py` | Note command handlers |
+| `test_storage.py` | Data persistence (save/load) |
+| `test_suggest_command.py` | Command suggestion and typo detection |
 
 ## GitHub Workflow
 
