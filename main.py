@@ -12,6 +12,7 @@ from storage import load_data, save_data
 from ui import (
     print_welcome, print_goodbye, print_result, get_input,
     print_contacts_table, print_notes_table, print_birthdays, print_help,
+    suggest_command,
 )
 
 
@@ -98,7 +99,7 @@ def main():
             case "sort-by-tag":
                 print_result(sort_by_tag(args, notebook))
             case _:
-                print_result("Invalid command.")
+                print_result(suggest_command(command))
 
 
 if __name__ == "__main__":

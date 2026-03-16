@@ -1,5 +1,6 @@
 import os
 import readline
+from difflib import get_close_matches
 from colorama import init, Fore, Style
 
 init()
@@ -183,6 +184,13 @@ def print_help():
         commands,
         col_styles=[MAGENTA, CYAN],
     ))
+
+
+def suggest_command(user_input):
+    matches = get_close_matches(user_input, COMMANDS, n=1, cutoff=0.6)
+    if matches:
+        return f"Invalid command. Did you mean: {matches[0]}?"
+    return "Invalid command."
 
 
 def get_input():
